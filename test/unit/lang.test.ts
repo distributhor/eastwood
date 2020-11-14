@@ -4,7 +4,7 @@ import * as lang from "../../src/lang";
 
 class Person {
   private name: string;
-  constructor(name) {
+  constructor(name: string) {
     this.name = name;
   }
 
@@ -32,37 +32,62 @@ describe("Wild West Tests", () => {
 
     const date = new Date();
     const person = new Person("ASDF");
+    const pet = new Object({
+      name: "spot",
+      hello: function () {
+        console.log(`Woof ${this.name}`);
+      },
+    });
 
     const arr = ["a", "b", "c"];
 
     const obj = {
-      name: "Willie",
+      name: "XYZ",
     };
 
-    const func = function (arg1) {
+    const emptyArr = [];
+    const emptyObj = {};
+
+    const func = function (arg1: string) {
       console.log(arg1);
     };
-
-    // const emptyArr = [];
-    const emptyObj = {};
 
     expect(lang.isEmptyObject(obj)).toBeFalsy();
     expect(lang.isEmptyObject(date)).toBeFalsy();
     expect(lang.isEmptyObject(person)).toBeFalsy();
+    expect(lang.isEmptyObject(emptyArr)).toBeFalsy();
     expect(lang.isEmptyObject(emptyObj)).toBeTruthy();
 
-    expect(lang.isTrueObject(obj)).toBeTruthy();
-    expect(lang.isTrueObject(emptyObj)).toBeTruthy();
-    expect(lang.isTrueObject(date)).toBeTruthy();
-    expect(lang.isTrueObject(person)).toBeTruthy();
-    expect(lang.isTrueObject(arr)).toBeFalsy();
-    expect(lang.isTrueObject(bool)).toBeFalsy();
-    expect(lang.isTrueObject(func)).toBeFalsy();
+    expect(lang.isObject(obj)).toBeTruthy();
+    expect(lang.isObjectLiteral(obj)).toBeTruthy();
+    expect(lang.isDataObject(obj)).toBeTruthy();
 
-    expect(lang.isNonDateObject(obj)).toBeTruthy();
-    expect(lang.isNonDateObject(emptyObj)).toBeTruthy();
-    expect(lang.isNonDateObject(person)).toBeTruthy();
-    expect(lang.isNonDateObject(date)).toBeFalsy();
+    expect(lang.isObject(emptyObj)).toBeTruthy();
+    expect(lang.isObjectLiteral(emptyObj)).toBeTruthy();
+    expect(lang.isDataObject(emptyObj)).toBeTruthy();
+
+    expect(lang.isObject(date)).toBeTruthy();
+    expect(lang.isObjectLiteral(date)).toBeFalsy();
+    expect(lang.isDataObject(date)).toBeFalsy();
+
+    expect(lang.isObject(person)).toBeTruthy();
+    expect(lang.isObjectLiteral(person)).toBeFalsy();
+    expect(lang.isDataObject(person)).toBeFalsy();
+
+    expect(lang.isObject(pet)).toBeTruthy();
+    expect(lang.isObjectLiteral(pet)).toBeTruthy();
+    expect(lang.isDataObject(pet)).toBeFalsy();
+
+    expect(lang.isObject(bool)).toBeFalsy();
+    expect(lang.isObject(func)).toBeFalsy();
+
+    expect(lang.isObject(arr)).toBeFalsy();
+    expect(lang.isObjectLiteral(arr)).toBeFalsy();
+    expect(typeof arr === "object").toBeTruthy();
+    expect(typeof emptyArr === "object").toBeTruthy();
+
+    expect({}).toBeTruthy();
+    expect([]).toBeTruthy();
 
     expect(lang.looksLikeNumber(num)).toBeTruthy();
     expect(lang.looksLikeNumber(numStr)).toBeTruthy();

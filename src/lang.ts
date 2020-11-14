@@ -1,16 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-export function isEmptyObject(value: any): boolean {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-
-  // because Object.keys(new Date()).length === 0 we need check
-  return Object.keys(value).length === 0 && value.constructor === Object;
-}
-
-export function isTrueObject(value: any): boolean {
+export function isObject(value: any): boolean {
   if (!value) {
     return false;
   }
@@ -22,12 +13,38 @@ export function isTrueObject(value: any): boolean {
   return false;
 }
 
-export function isNonDateObject(value: any): boolean {
-  if (isTrueObject(value)) {
-    return !(value instanceof Date);
+export function isEmptyObject(value: any): boolean {
+  if (!value || !isObject(value)) {
+    return false;
   }
 
-  return false;
+  // because Object.keys(new Date()).length === 0 we need check
+  return Object.keys(value).length === 0 && value.constructor === Object;
+}
+
+// isPOJO
+export function isObjectLiteral(value: any): boolean {
+  if (!value || !isObject(value)) {
+    return false;
+  }
+
+  // if (isObject(value)) {
+  //   return !(value instanceof Date);
+  // }
+
+  const proto = Object.getPrototypeOf(value);
+  // Prototype may be null if you used `Object.create(null)`
+  // Checking `proto`'s constructor is safe because `getPrototypeOf()`
+  // explicitly crosses the boundary from object data to object metadata
+  return !proto || proto.constructor === Object;
+}
+
+export function isDataObject(value: any): boolean {
+  if (!value || !isObjectLiteral(value)) {
+    return false;
+  }
+
+  return Object.keys(value).filter((k) => typeof value[k] === "function").length === 0;
 }
 
 export function isNumericString(value: any): boolean {
@@ -178,7 +195,7 @@ export function toLookupMap(data: any, objectIdentifier = "id"): any {
         map[item[objectIdentifier]] = item;
       }
     }
-  } else if (isNonDateObject(data)) {
+  } else if (isObjectLiteral(data)) {
     if (data[objectIdentifier]) {
       map[data[objectIdentifier]] = data;
     }
