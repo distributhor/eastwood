@@ -2,6 +2,17 @@
 // const _ = require("lodash");
 import * as lang from "../../src/lang";
 
+class Person {
+  private name: string;
+  constructor(name) {
+    this.name = name;
+  }
+
+  hello() {
+    console.log(`Hello ${this.name}`);
+  }
+}
+
 describe("Wild West Tests", () => {
   test("Equality", () => {
     const str = "string";
@@ -20,6 +31,7 @@ describe("Wild West Tests", () => {
     const twoStr = "2";
 
     const date = new Date();
+    const person = new Person("ASDF");
 
     const arr = ["a", "b", "c"];
 
@@ -31,24 +43,25 @@ describe("Wild West Tests", () => {
       console.log(arg1);
     };
 
-    const emptyArr = [];
+    // const emptyArr = [];
     const emptyObj = {};
 
-    expect(lang.isDate(date)).toBeTruthy();
-    expect(lang.isDate(obj)).toBeFalsy();
-    expect(lang.isDate(str)).toBeFalsy();
-    expect(lang.isDate(num)).toBeFalsy();
-    expect(lang.isDate(bool)).toBeFalsy();
+    expect(lang.isEmptyObject(obj)).toBeFalsy();
+    expect(lang.isEmptyObject(date)).toBeFalsy();
+    expect(lang.isEmptyObject(person)).toBeFalsy();
+    expect(lang.isEmptyObject(emptyObj)).toBeTruthy();
 
-    expect(lang.isObject(obj)).toBeTruthy();
-    expect(lang.isObject(emptyObj)).toBeTruthy();
-    expect(lang.isObject(date)).toBeTruthy();
-    expect(lang.isObject(arr)).toBeFalsy();
-    expect(lang.isObject(bool)).toBeFalsy();
-    expect(lang.isObject(func)).toBeFalsy();
+    expect(lang.isTrueObject(obj)).toBeTruthy();
+    expect(lang.isTrueObject(emptyObj)).toBeTruthy();
+    expect(lang.isTrueObject(date)).toBeTruthy();
+    expect(lang.isTrueObject(person)).toBeTruthy();
+    expect(lang.isTrueObject(arr)).toBeFalsy();
+    expect(lang.isTrueObject(bool)).toBeFalsy();
+    expect(lang.isTrueObject(func)).toBeFalsy();
 
     expect(lang.isNonDateObject(obj)).toBeTruthy();
     expect(lang.isNonDateObject(emptyObj)).toBeTruthy();
+    expect(lang.isNonDateObject(person)).toBeTruthy();
     expect(lang.isNonDateObject(date)).toBeFalsy();
 
     expect(lang.looksLikeNumber(num)).toBeTruthy();
@@ -84,34 +97,71 @@ describe("Wild West Tests", () => {
     expect(lang.isPrimitive(date)).toBeFalsy();
   });
 
-  test("Parse JSON object", () => {
+  test("Parse boolean token", () => {
+    expect.assertions(20);
+
+    expect(lang.parseBooleanToken(true)).toEqual(true);
+    expect(lang.parseBooleanToken("true")).toEqual(true);
+    expect(lang.parseBooleanToken("1")).toEqual(true);
+    expect(lang.parseBooleanToken(1)).toEqual(true);
+    expect(lang.parseBooleanToken(0)).toEqual(false);
+    expect(lang.parseBooleanToken("0")).toEqual(false);
+    expect(lang.parseBooleanToken("false")).toEqual(false);
+    expect(lang.parseBooleanToken(false)).toEqual(false);
+
+    try {
+      lang.parseBooleanToken("invalid-boolen-token");
+    } catch (e) {
+      expect(e).toBeDefined();
+    }
+
+    try {
+      lang.parseBooleanToken("2");
+    } catch (e) {
+      expect(e).toBeDefined();
+    }
+
+    expect(lang.parseBooleanToken("invalid-boolen-token", true)).toEqual(false);
+    expect(lang.parseBooleanToken("2", true)).toEqual(false);
+
+    expect(lang.parseBooleanToken(true, true)).toEqual(true);
+    expect(lang.parseBooleanToken("true", true)).toEqual(true);
+    expect(lang.parseBooleanToken("1", true)).toEqual(true);
+    expect(lang.parseBooleanToken(1, true)).toEqual(true);
+    expect(lang.parseBooleanToken(0, true)).toEqual(false);
+    expect(lang.parseBooleanToken("0", true)).toEqual(false);
+    expect(lang.parseBooleanToken("false", true)).toEqual(false);
+    expect(lang.parseBooleanToken(false, true)).toEqual(false);
+  });
+
+  test("Parse JSON", () => {
     expect.assertions(9);
 
     const goodJson = '{"a":"obja","b":[0,1,2],"c":{"d":"some object"}}';
     const badJson = '{"a":"obja""b":[0,1,2],"c":{"d":"some object"}}';
     const strNumber = "121212";
 
-    expect(lang.parseJsonObject(goodJson)).toEqual(
+    expect(lang.parseJson(goodJson)).toEqual(
       expect.objectContaining({ a: "obja", b: [0, 1, 2], c: { d: "some object" } })
     );
 
-    expect(lang.parseJsonObject(strNumber)).toBeUndefined();
-    expect(lang.parseJsonObject(strNumber, { strict: false })).toEqual(121212);
+    expect(lang.parseJson(strNumber)).toBeUndefined();
+    expect(lang.parseJson(strNumber, { strict: false })).toEqual(121212);
 
-    expect(lang.parseJsonObject(strNumber, { silent: true })).toBeUndefined();
-    expect(lang.parseJsonObject(strNumber, { strict: false, silent: true })).toEqual(121212);
+    expect(lang.parseJson(strNumber, { silent: true })).toBeUndefined();
+    expect(lang.parseJson(strNumber, { strict: false, silent: true })).toEqual(121212);
 
-    expect(lang.parseJsonObject(badJson, { silent: true })).toBeUndefined();
-    expect(lang.parseJsonObject(badJson, { strict: false, silent: true })).toBeUndefined();
+    expect(lang.parseJson(badJson, { silent: true })).toBeUndefined();
+    expect(lang.parseJson(badJson, { strict: false, silent: true })).toBeUndefined();
 
     try {
-      lang.parseJsonObject(badJson);
+      lang.parseJson(badJson);
     } catch (e) {
       expect(e).toBeDefined();
     }
 
     try {
-      lang.parseJsonObject(badJson, { strict: false });
+      lang.parseJson(badJson, { strict: false });
     } catch (e) {
       expect(e).toBeDefined();
     }
@@ -130,20 +180,53 @@ describe("Wild West Tests", () => {
     lang.shuffleArray(arr1);
     lang.shuffleArray(arr2);
 
-    for (const item of arr1) {
-      console.log(item);
-    }
+    // for (const item of arr1) {
+    //   console.log(item);
+    // }
 
-    for (const item of arr2) {
-      console.log(item);
-    }
+    // for (const item of arr2) {
+    //   console.log(item);
+    // }
   });
 
   test("Integer range", () => {
     console.log(lang.integerRange(9, 18));
-    console.log(lang.randomIntegerRange(9, 18));
-    console.log(lang.randomIntegerRange(0, 7));
-    console.log(lang.randomIntegerRange(0, 11));
-    console.log(lang.randomIntegerRange(1, 8));
+    // console.log(lang.randomIntegerRange(9, 18));
+    // console.log(lang.randomIntegerRange(0, 7));
+    // console.log(lang.randomIntegerRange(0, 11));
+    // console.log(lang.randomIntegerRange(1, 8));
+  });
+
+  test("Unique object array", () => {
+    const arr = [
+      { name: "A", size: 12 },
+      { name: "B", size: 11 },
+      { name: "C", size: 15 },
+      { name: "D", size: 16 },
+      { name: "B", size: 19 },
+      { name: "E", size: 11 },
+    ];
+
+    // { name: "B", size: 19 } should be missing
+    expect(lang.uniqueObjectArray(arr, "name")).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: "A", size: 12 }),
+        expect.objectContaining({ name: "B", size: 11 }),
+        expect.objectContaining({ name: "C", size: 15 }),
+        expect.objectContaining({ name: "D", size: 16 }),
+        expect.objectContaining({ name: "E", size: 11 }),
+      ])
+    );
+
+    // { name: "E", size: 11 } should be missing
+    expect(lang.uniqueObjectArray(arr, "size")).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: "A", size: 12 }),
+        expect.objectContaining({ name: "B", size: 11 }),
+        expect.objectContaining({ name: "C", size: 15 }),
+        expect.objectContaining({ name: "D", size: 16 }),
+        expect.objectContaining({ name: "B", size: 19 }),
+      ])
+    );
   });
 });
