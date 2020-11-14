@@ -1,9 +1,13 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-export function isEmptyObject(obj: any): boolean {
+export function isEmptyObject(value: any): boolean {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
   // because Object.keys(new Date()).length === 0 we need check
-  return Object.keys(obj).length === 0 && obj.constructor === Object;
+  return Object.keys(value).length === 0 && value.constructor === Object;
 }
 
 export function isTrueObject(value: any): boolean {
