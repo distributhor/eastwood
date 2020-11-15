@@ -2,10 +2,20 @@
 // const _ = require("lodash");
 import * as lang from "../../src/lang";
 
+export interface Human {
+  name?: string;
+  surname?: string;
+  age?: number;
+}
+
 class Person {
-  private name: string;
-  constructor(name: string) {
+  public name: string;
+  public surname: string;
+  public age: number;
+  constructor(name?: string, surname?: string, age?: number) {
     this.name = name;
+    this.surname = surname;
+    this.age = age;
   }
 
   hello() {
@@ -30,15 +40,6 @@ describe("Wild West Tests", () => {
     const zeroStr = "0";
     const twoStr = "2";
 
-    const date = new Date();
-    const person = new Person("ASDF");
-    const pet = new Object({
-      name: "spot",
-      hello: function () {
-        console.log(`Woof ${this.name}`);
-      },
-    });
-
     const arr = ["a", "b", "c"];
 
     const obj = {
@@ -47,47 +48,74 @@ describe("Wild West Tests", () => {
 
     const emptyArr = [];
     const emptyObj = {};
+    const emptyObj2 = Object.create({});
+
+    const date = new Date();
+    const person = new Person("ASDF");
+    const emptyPerson = new Person();
+    const emptyPet1 = new Object();
+    const emptyPet2 = new Object({});
+    const pet = new Object({
+      name: "spot",
+      hello: function () {
+        console.log(`Woof ${this.name}`);
+      },
+    });
+
+    const petData1 = {
+      name: "spot",
+    };
+
+    const petData2 = new Object({
+      name: "spot",
+    });
 
     const func = function (arg1: string) {
       console.log(arg1);
     };
 
-    expect(lang.isEmptyObject(obj)).toBeFalsy();
-    expect(lang.isEmptyObject(date)).toBeFalsy();
-    expect(lang.isEmptyObject(person)).toBeFalsy();
-    expect(lang.isEmptyObject(emptyArr)).toBeFalsy();
-    expect(lang.isEmptyObject(emptyObj)).toBeTruthy();
-
     expect(lang.isObject(obj)).toBeTruthy();
-    expect(lang.isObjectLiteral(obj)).toBeTruthy();
+    expect(lang.isPlainObject(obj)).toBeTruthy();
     expect(lang.isDataObject(obj)).toBeTruthy();
 
     expect(lang.isObject(emptyObj)).toBeTruthy();
-    expect(lang.isObjectLiteral(emptyObj)).toBeTruthy();
+    expect(lang.isPlainObject(emptyObj)).toBeTruthy();
     expect(lang.isDataObject(emptyObj)).toBeTruthy();
 
     expect(lang.isObject(date)).toBeTruthy();
-    expect(lang.isObjectLiteral(date)).toBeFalsy();
+    expect(lang.isPlainObject(date)).toBeFalsy();
     expect(lang.isDataObject(date)).toBeFalsy();
 
     expect(lang.isObject(person)).toBeTruthy();
-    expect(lang.isObjectLiteral(person)).toBeFalsy();
+    expect(lang.isPlainObject(person)).toBeFalsy();
     expect(lang.isDataObject(person)).toBeFalsy();
 
     expect(lang.isObject(pet)).toBeTruthy();
-    expect(lang.isObjectLiteral(pet)).toBeTruthy();
+    expect(lang.isPlainObject(pet)).toBeTruthy();
     expect(lang.isDataObject(pet)).toBeFalsy();
+    expect(lang.isDataObject(petData1)).toBeTruthy();
+    expect(lang.isDataObject(petData2)).toBeTruthy();
 
     expect(lang.isObject(bool)).toBeFalsy();
     expect(lang.isObject(func)).toBeFalsy();
 
     expect(lang.isObject(arr)).toBeFalsy();
-    expect(lang.isObjectLiteral(arr)).toBeFalsy();
+    expect(lang.isPlainObject(arr)).toBeFalsy();
     expect(typeof arr === "object").toBeTruthy();
     expect(typeof emptyArr === "object").toBeTruthy();
 
     expect({}).toBeTruthy();
     expect([]).toBeTruthy();
+
+    expect(lang.isEmptyObject(obj)).toBeFalsy();
+    expect(lang.isEmptyObject(date)).toBeFalsy();
+    expect(lang.isEmptyObject(person)).toBeFalsy();
+    expect(lang.isEmptyObject(emptyArr)).toBeFalsy();
+    expect(lang.isEmptyObject(emptyPerson)).toBeFalsy();
+    expect(lang.isEmptyObject(emptyObj)).toBeTruthy();
+    expect(lang.isEmptyObject(emptyObj2)).toBeTruthy();
+    expect(lang.isEmptyObject(emptyPet1)).toBeTruthy();
+    expect(lang.isEmptyObject(emptyPet2)).toBeTruthy();
 
     expect(lang.looksLikeNumber(num)).toBeTruthy();
     expect(lang.looksLikeNumber(numStr)).toBeTruthy();
@@ -204,18 +232,10 @@ describe("Wild West Tests", () => {
 
     lang.shuffleArray(arr1);
     lang.shuffleArray(arr2);
-
-    // for (const item of arr1) {
-    //   console.log(item);
-    // }
-
-    // for (const item of arr2) {
-    //   console.log(item);
-    // }
   });
 
   test("Integer range", () => {
-    console.log(lang.integerRange(9, 18));
+    expect(lang.integerRange(9, 14)).toEqual(expect.arrayContaining([9, 10, 11, 12, 13, 14]));
     // console.log(lang.randomIntegerRange(9, 18));
     // console.log(lang.randomIntegerRange(0, 7));
     // console.log(lang.randomIntegerRange(0, 11));
@@ -253,5 +273,70 @@ describe("Wild West Tests", () => {
         expect.objectContaining({ name: "B", size: 19 }),
       ])
     );
+  });
+
+  test("HashMap", () => {
+    const people1: Human[] = [
+      { name: "John", surname: "Doe", age: 20 },
+      { name: "John", surname: "Foo", age: 40 },
+      { name: "Joe", surname: "Soap", age: 30 },
+      { name: "Jan", surname: "Doe", age: 40 },
+    ];
+
+    const people2: Person[] = [
+      new Person("John", "Doe", 20),
+      new Person("John", "Foo", 40),
+      new Person("Joe", "Soap", 30),
+      new Person("Jan", "Doe", 40),
+    ];
+
+    const result1 = lang.toHashMap(people1, "name");
+    const result2 = lang.toHashMap(people1, "surname");
+    const result3 = lang.toHashMap(people1, "age");
+    const result4 = lang.toHashMap(people2, "name");
+    const result5 = lang.toHashMap(people2, "surname");
+    const result6 = lang.toHashMap(people2, "age");
+
+    expect(result1).toEqual(
+      expect.objectContaining({
+        John: { name: "John", surname: "Foo", age: 40 },
+        Joe: { name: "Joe", surname: "Soap", age: 30 },
+        Jan: { name: "Jan", surname: "Doe", age: 40 },
+      })
+    );
+
+    expect(result1["John"].surname).toEqual("Foo");
+    expect(result4["John"].surname).toEqual("Foo");
+    expect(result1["John"] instanceof Object).toBeTruthy();
+    expect(result1["John"] instanceof Person).toBeFalsy();
+    expect(result4["John"] instanceof Person).toBeTruthy();
+
+    expect(result2).toEqual(
+      expect.objectContaining({
+        Doe: { name: "Jan", surname: "Doe", age: 40 },
+        Foo: { name: "John", surname: "Foo", age: 40 },
+        Soap: { name: "Joe", surname: "Soap", age: 30 },
+      })
+    );
+
+    expect(result2["Soap"].name).toEqual("Joe");
+    expect(result5["Soap"].name).toEqual("Joe");
+    expect(result2["Soap"] instanceof Object).toBeTruthy();
+    expect(result2["Soap"] instanceof Person).toBeFalsy();
+    expect(result5["Soap"] instanceof Person).toBeTruthy();
+
+    expect(result3).toEqual(
+      expect.objectContaining({
+        "20": { name: "John", surname: "Doe", age: 20 },
+        "30": { name: "Joe", surname: "Soap", age: 30 },
+        "40": { name: "Jan", surname: "Doe", age: 40 },
+      })
+    );
+
+    expect(result3["40"].name).toEqual("Jan");
+    expect(result6["40"].name).toEqual("Jan");
+    expect(result3["40"] instanceof Object).toBeTruthy();
+    expect(result3["40"] instanceof Person).toBeFalsy();
+    expect(result6["40"] instanceof Person).toBeTruthy();
   });
 });

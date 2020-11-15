@@ -13,38 +13,41 @@ export function isObject(value: any): boolean {
   return false;
 }
 
-export function isEmptyObject(value: any): boolean {
+export function isPlainObject(value: any): boolean {
   if (!value || !isObject(value)) {
     return false;
   }
-
-  // because Object.keys(new Date()).length === 0 we need check
-  return Object.keys(value).length === 0 && value.constructor === Object;
-}
-
-// isPOJO
-export function isObjectLiteral(value: any): boolean {
-  if (!value || !isObject(value)) {
-    return false;
-  }
-
-  // if (isObject(value)) {
-  //   return !(value instanceof Date);
-  // }
 
   const proto = Object.getPrototypeOf(value);
   // Prototype may be null if you used `Object.create(null)`
-  // Checking `proto`'s constructor is safe because `getPrototypeOf()`
-  // explicitly crosses the boundary from object data to object metadata
-  return !proto || proto.constructor === Object;
+  // Checking `proto`'s constructor is safe because `getPrototypeOf()` explicitly crosses
+  // the boundary from object data to object metadata
+
+  // By checking the constructor.name property instead of proto.constructor === Object,
+  // we support objects generated using Node.js 'vm' module
+
+  // return !proto || proto.constructor === Object;
+  return !proto || proto.constructor.name === "Object";
 }
 
 export function isDataObject(value: any): boolean {
-  if (!value || !isObjectLiteral(value)) {
+  if (!value || !isPlainObject(value)) {
     return false;
   }
 
   return Object.keys(value).filter((k) => typeof value[k] === "function").length === 0;
+}
+
+export function isEmptyObject(value: any): boolean {
+  if (!value || !isPlainObject(value)) {
+    return false;
+  }
+
+  // changed the initial check from isObject to isPlainObject, simplifying the return statement
+  // because Object.keys(new Date()).length === 0 we need check the type
+  // return Object.keys(value).length === 0 && value.constructor === Object;
+
+  return Object.keys(value).length === 0;
 }
 
 export function isNumericString(value: any): boolean {
@@ -87,7 +90,7 @@ export function isPrimitive(value: any): boolean {
   return typeof value === "string" || typeof value === "boolean" || typeof value === "number";
 }
 
-export function shuffleArray(array: any[]): any[] {
+export function shuffleArray<T>(array: T[]): T[] {
   // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
   let currentIndex = array.length;
   let randomIndex = undefined;
@@ -117,7 +120,7 @@ export function randomIntegerRange(start: number, end: number): number[] {
   return shuffleArray(integerRange(start, end));
 }
 
-export function uniqueObjectArray(arr: any[], uniquePropertyName: string): any[] {
+export function uniqueObjectArray<T>(arr: T[], uniquePropertyName: string): T[] {
   return arr.reduce((accumulator, element) => {
     if (!accumulator.find((el) => el[uniquePropertyName] === element[uniquePropertyName])) {
       accumulator.push(element);
@@ -187,56 +190,26 @@ export function parseJson(jsonString: string, options: JsonParseOptions = {}): a
   }
 }
 
-export function toLookupMap(data: any, objectIdentifier = "id"): any {
-  const map = {};
-  if (this.isArray(data)) {
-    for (const item of data) {
-      if (item[objectIdentifier]) {
-        map[item[objectIdentifier]] = item;
-      }
-    }
-  } else if (isObjectLiteral(data)) {
-    if (data[objectIdentifier]) {
-      map[data[objectIdentifier]] = data;
+export interface UntypedObject {
+  [key: string]: any;
+}
+
+export interface HashMap<T> {
+  [key: string]: T;
+}
+
+export function toHashMap<T>(data: T[], uniqueIdProp = "id"): HashMap<T> {
+  if (!Array.isArray(data)) {
+    return {};
+  }
+
+  const map: HashMap<T> = {};
+
+  for (const item of data) {
+    if (item[uniqueIdProp]) {
+      map[item[uniqueIdProp]] = item;
     }
   }
-  return {
-    data: map,
-    keys: function () {
-      return Object.keys(map);
-    },
-    getItem: function (id) {
-      return map[id];
-    },
-    hasItem: function (id) {
-      return map[id] ? true : false;
-    },
-    hasItemWithProperty: function (id, property) {
-      return this.hasProperty(id, property);
-    },
-    hasItemWithNotNullProperty: function (id, property) {
-      const value = this.getProperty(id, property);
-      if (value === undefined || value === null) {
-        return false;
-      }
-      return true;
-      //if ((value) || (value === false)) {
-      //    return true;
-      //}
-      //return false;
-    },
-    hasProperty: function (id, property) {
-      if (!this.hasItem(id)) {
-        return false;
-      }
-      return map[id].hasOwnProperty(property) ? true : false;
-    },
-    getProperty: function (id, property) {
-      if (this.hasProperty(id, property)) {
-        return map[id][property];
-      } else {
-        return undefined;
-      }
-    },
-  };
+
+  return map;
 }
