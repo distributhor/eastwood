@@ -23,7 +23,7 @@ export default [
     input: "src/browser.ts",
     output: {
       file: "dist/wild-west.js",
-      name: "TheWildWest",
+      name: "WildWest",
       format: "iife",
     },
   },
