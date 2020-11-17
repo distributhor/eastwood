@@ -236,10 +236,10 @@ describe("Wild West Tests", () => {
 
   test("Integer range", () => {
     expect(lang.integerRange(9, 14)).toEqual(expect.arrayContaining([9, 10, 11, 12, 13, 14]));
-    // console.log(lang.randomIntegerRange(9, 18));
-    // console.log(lang.randomIntegerRange(0, 7));
-    // console.log(lang.randomIntegerRange(0, 11));
-    // console.log(lang.randomIntegerRange(1, 8));
+    // console.log(lang.shuffledIntegerRange(9, 18));
+    // console.log(lang.shuffledIntegerRange(0, 7));
+    // console.log(lang.shuffledIntegerRange(0, 11));
+    // console.log(lang.shuffledIntegerRange(1, 8));
   });
 
   test("Unique object array", () => {
