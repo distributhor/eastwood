@@ -331,8 +331,8 @@ export interface JsonParseOptions {
 /**
  * A wrapper around `JSON.parse()` with some extra features.
  *
- * If you prefer `undefined` to be returned, instead of throwing an error when failing
- * to parse a JSON string, then pass the option `{ silent: true }`.
+ * If you prefer `undefined` to be returned when a JSON parsing error occurs, instead of an
+ * error being thrown, then pass the option `{ silent: true }`.
  *
  * Further to that, when doing a regular `JSON.parse()`, neither `JSON.parse(false)` nor
  * `JSON.parse(1234)` will result in errors. If you prefer a stricter JSON parse, which would
