@@ -282,6 +282,20 @@ export function uniqueObjectArray<T>(arr: T[], uniqueProperty: string): T[] {
   }, []);
 }
 
+/**
+ * Convert a value that represents a valid boolean token into a boolean value, where a
+ * valid boolean token can be any of:
+ * - true or "true"
+ * - false or "false"
+ * - 1 or "1"
+ * - 0 or "0"
+ *
+ * If the value passed does not represent any valid token, an `Error` will be thrown.
+ * Alternatively, to surpress the error and return false instead, pass the `silent`
+ * parameter with a value of `true`.
+ *
+ * @returns Returns the boolean value that the token represents
+ */
 export function parseBooleanToken(value: any, silent = false): boolean {
   if (!value) {
     return false;
@@ -304,7 +318,7 @@ export function parseBooleanToken(value: any, silent = false): boolean {
       if (silent) {
         return false;
       } else {
-        throw "Invalid boolean token";
+        throw new Error("Invalid boolean token");
       }
   }
 }
@@ -314,6 +328,22 @@ export interface JsonParseOptions {
   silent?: boolean;
 }
 
+/**
+ * A wrapper around `JSON.parse()` with some extra features.
+ *
+ * If you prefer `undefined` to be returned, instead of throwing an error when failing
+ * to parse a JSON string, then pass the option `{ silent: true }`.
+ *
+ * Further to that, when doing a regular `JSON.parse()`, neither `JSON.parse(false)` nor
+ * `JSON.parse(1234)` will result in errors. If you prefer a stricter JSON parse, which would
+ * treat those as errors, therefore always expecting either objects or an array of values/objects,
+ * then pass the option `{ strict: true }`.
+ *
+ * Both options can be used, depending on whether you want a strict parse, and/or an error to be
+ * thrown, as opposed to `undefined` being returned for a parse failure.
+ *
+ * @returns Returns the parsed JSON object or array of objects/values
+ */
 export function parseJson(jsonString: string, options: JsonParseOptions = {}): any | any[] {
   if (options.strict === undefined) {
     options.strict = true;
@@ -351,6 +381,12 @@ export interface HashMap<T> {
   [key: string]: T;
 }
 
+/**
+ * Creates a lookup map ([[HashMap]]) for a given array of objects, whereby the objects
+ * can be looked up by a key, representing a property value that is deemed to be unique
+ *
+ * @returns HashMap
+ */
 export function toHashMap<T>(data: T[], uniqueIdProp = "id"): HashMap<T> {
   if (!Array.isArray(data)) {
     return {};
