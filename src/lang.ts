@@ -171,9 +171,9 @@ export function isPrimitive(value: any): boolean {
  * Shuffles an array, using the algorithm found here:
  * https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
  *
- * Note that this changes the order of the array passed that is passed in, and returns that
- * array. This implementation may change in favor of an immutable one, where a copy of the
- * array is created, shuffled and returned, leaving the original one intact.
+ * Note that this changes the order of the actual array that is passed in, and returns the
+ * mutated array. This implementation may change in favor of an immutable one, where a copy
+ * of the array is created, shuffled and returned, leaving the original one intact.
  *
  * @returns Returns the shuffled array
  */
