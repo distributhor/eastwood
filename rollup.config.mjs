@@ -20,10 +20,10 @@ export default [
         },
       }),
     ],
-    input: "src/browser.ts",
+    input: "src/index.ts",
     output: {
-      file: "dist/wild-west.js",
-      name: "WildWest",
+      file: "dist/browser.js",
+      name: "eastwood",
       format: "iife",
     },
   },

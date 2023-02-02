@@ -14,14 +14,14 @@
  */
 export function isObject(value: any): boolean {
   if (!value) {
-    return false;
+    return false
   }
 
-  if (typeof value === "object") {
-    return !Array.isArray(value);
+  if (typeof value === 'object') {
+    return !Array.isArray(value)
   }
 
-  return false;
+  return false
 }
 
 /**
@@ -40,10 +40,10 @@ export function isObject(value: any): boolean {
  */
 export function isPlainObject(value: any): boolean {
   if (!value || !isObject(value)) {
-    return false;
+    return false
   }
 
-  const proto = Object.getPrototypeOf(value);
+  const proto = Object.getPrototypeOf(value)
   // Prototype may be null if you used `Object.create(null)`
   // Checking `proto`'s constructor is safe because `getPrototypeOf()` explicitly crosses
   // the boundary from object data to object metadata
@@ -52,7 +52,7 @@ export function isPlainObject(value: any): boolean {
   // we support objects generated using Node.js 'vm' module
 
   // return !proto || proto.constructor === Object;
-  return !proto || proto.constructor.name === "Object";
+  return !proto || proto.constructor.name === 'Object'
 }
 
 /**
@@ -70,10 +70,10 @@ export function isPlainObject(value: any): boolean {
  */
 export function isDataObject(value: any): boolean {
   if (!value || !isPlainObject(value)) {
-    return false;
+    return false
   }
 
-  return Object.keys(value).filter((k) => typeof value[k] === "function").length === 0;
+  return Object.keys(value).filter((k) => typeof value[k] === 'function').length === 0
 }
 
 /**
@@ -83,14 +83,14 @@ export function isDataObject(value: any): boolean {
  */
 export function isEmptyObject(value: any): boolean {
   if (!value || !isPlainObject(value)) {
-    return false;
+    return false
   }
 
   // changed the initial check from isObject to isPlainObject, simplifying the return statement
   // because Object.keys(new Date()).length === 0 we need check the type
   // return Object.keys(value).length === 0 && value.constructor === Object;
 
-  return Object.keys(value).length === 0;
+  return Object.keys(value).length === 0
 }
 
 /**
@@ -101,10 +101,10 @@ export function isEmptyObject(value: any): boolean {
  */
 export function isNumericString(value: any): boolean {
   if (!value) {
-    return false;
+    return false
   }
 
-  return typeof value === "string" && !isNaN(+value) && !isNaN(parseFloat(value));
+  return typeof value === 'string' && !isNaN(+value) && !isNaN(parseFloat(value))
 }
 
 /**
@@ -116,10 +116,10 @@ export function isNumericString(value: any): boolean {
  */
 export function looksLikeNumber(value: any): boolean {
   if (!value) {
-    return false;
+    return false
   }
 
-  return typeof value === "number" || isNumericString(value);
+  return typeof value === 'number' || isNumericString(value)
 }
 
 /**
@@ -135,20 +135,20 @@ export function looksLikeNumber(value: any): boolean {
  * valid boolean indicators, the default is `["true", "false"]`
  * @returns Returns a boolean indicating whether the value looks like a boolean
  */
-export function looksLikeBoolean(value: any, acceptedBooleanTokens: string[] = ["true", "false"]): boolean {
+export function looksLikeBoolean(value: any, acceptedBooleanTokens: string[] = ['true', 'false']): boolean {
   if (value === undefined) {
-    return false;
+    return false
   }
 
-  if (typeof value === "boolean") {
-    return true;
+  if (typeof value === 'boolean') {
+    return true
   }
 
-  if (typeof value !== "string") {
-    return false;
+  if (typeof value !== 'string') {
+    return false
   }
 
-  return acceptedBooleanTokens.includes(value.trim().toLocaleLowerCase());
+  return acceptedBooleanTokens.includes(value.trim().toLocaleLowerCase())
 }
 
 /**
@@ -161,10 +161,10 @@ export function looksLikeBoolean(value: any, acceptedBooleanTokens: string[] = [
  */
 export function isPrimitive(value: any): boolean {
   if (value === undefined) {
-    return false;
+    return false
   }
 
-  return typeof value === "string" || typeof value === "boolean" || typeof value === "number";
+  return typeof value === 'string' || typeof value === 'boolean' || typeof value === 'number'
 }
 
 /**
@@ -178,20 +178,20 @@ export function isPrimitive(value: any): boolean {
  * @returns Returns the shuffled array
  */
 export function shuffleArray<T>(array: T[]): T[] {
-  let currentIndex = array.length;
-  let randomIndex = undefined;
-  let tmpVal = undefined;
+  let currentIndex = array.length
+  let randomIndex: number
+  let tmpVal: any
 
-  while (0 !== currentIndex) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex -= 1
 
-    tmpVal = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = tmpVal;
+    tmpVal = array[currentIndex]
+    array[currentIndex] = array[randomIndex]
+    array[randomIndex] = tmpVal
   }
 
-  return array;
+  return array
 }
 
 /**
@@ -202,7 +202,7 @@ export function shuffleArray<T>(array: T[]): T[] {
 export function integerRange(start: number, end: number): number[] {
   return Array(end - start + 1)
     .fill(0)
-    .map((_, idx) => start + idx);
+    .map((_, idx) => start + idx)
 }
 
 /**
@@ -212,7 +212,7 @@ export function integerRange(start: number, end: number): number[] {
  * @returns Returns the shuffled array
  */
 export function shuffledIntegerRange(start: number, end: number): number[] {
-  return shuffleArray(integerRange(start, end));
+  return shuffleArray(integerRange(start, end))
 }
 
 /**
@@ -274,12 +274,12 @@ export function shuffledIntegerRange(start: number, end: number): number[] {
  * @returns Returns the unique object array
  */
 export function uniqueObjectArray<T>(arr: T[], uniqueProperty: string): T[] {
-  return arr.reduce((accumulator, element) => {
+  return arr.reduce((accumulator: T[], element) => {
     if (!accumulator.find((el) => el[uniqueProperty] === element[uniqueProperty])) {
-      accumulator.push(element);
+      accumulator.push(element)
     }
-    return accumulator;
-  }, []);
+    return accumulator
+  }, [])
 }
 
 /**
@@ -298,34 +298,34 @@ export function uniqueObjectArray<T>(arr: T[], uniqueProperty: string): T[] {
  */
 export function parseBooleanToken(value: any, silent = false): boolean {
   if (!value) {
-    return false;
+    return false
   }
 
-  const v = typeof value === "string" ? value.toLocaleLowerCase() : value;
+  const v = typeof value === 'string' ? value.toLocaleLowerCase() : value
 
   switch (v) {
     case true:
-    case "true":
-    case "1":
+    case 'true':
+    case '1':
     case 1:
-      return true;
+      return true
     case false:
-    case "false":
-    case "0":
+    case 'false':
+    case '0':
     case 0:
-      return false;
+      return false
     default:
       if (silent) {
-        return false;
+        return false
       } else {
-        throw new Error("Invalid boolean token");
+        throw new Error('Invalid boolean token')
       }
   }
 }
 
 export interface JsonParseOptions {
-  strict?: boolean;
-  silent?: boolean;
+  strict?: boolean
+  silent?: boolean
 }
 
 /**
@@ -346,39 +346,39 @@ export interface JsonParseOptions {
  */
 export function parseJson(jsonString: string, options: JsonParseOptions = {}): any | any[] {
   if (options.strict === undefined) {
-    options.strict = true;
+    options.strict = true
   }
 
   try {
-    const o = JSON.parse(jsonString);
+    const o = JSON.parse(jsonString)
 
     if (!options.strict) {
-      return o;
+      return o
     }
 
     // Neither JSON.parse(false) or JSON.parse(1234) throw errors,
     // hence the type-checking, but... JSON.parse(null) returns null,
     // and typeof null === "object", so we must check for that, too.
-    if (o && typeof o === "object") {
-      return o;
+    if (o && typeof o === 'object') {
+      return o
     }
 
-    return undefined;
+    return undefined
   } catch (e) {
     if (options.silent) {
-      return undefined;
+      return undefined
     }
 
-    throw e;
+    throw e
   }
 }
 
 export interface UntypedObject {
-  [key: string]: any;
+  [key: string]: any
 }
 
 export interface HashMap<T> {
-  [key: string]: T;
+  [key: string]: T
 }
 
 /**
@@ -387,18 +387,18 @@ export interface HashMap<T> {
  *
  * @returns HashMap
  */
-export function toHashMap<T>(data: T[], uniqueIdProp = "id"): HashMap<T> {
+export function toHashMap<T>(data: T[], uniqueIdProp = 'id'): HashMap<T> {
   if (!Array.isArray(data)) {
-    return {};
+    return {}
   }
 
-  const map: HashMap<T> = {};
+  const map: HashMap<T> = {}
 
   for (const item of data) {
     if (item[uniqueIdProp]) {
-      map[item[uniqueIdProp]] = item;
+      map[item[uniqueIdProp]] = item
     }
   }
 
-  return map;
+  return map
 }

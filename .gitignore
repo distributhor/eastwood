@@ -1,13 +1,7 @@
-/lib
-/dist
-/script.ts
-/script.js
-
-/legacy
-
 .env
-.cache
-
+.debug.env
+/dist
+/legacy
 node_modules
 
 package-lock.json
@@ -22,7 +16,6 @@ lib-cov
 coverage
 .nyc_output
 
-.vscode
 .idea
 
 .DS_Store
