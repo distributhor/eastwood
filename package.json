@@ -74,17 +74,6 @@
     "typescript": "^4.8.4",
     "yarn": ">=1.22.0"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "yarn lint && yarn test"
-    }
-  },
-  "lint-staged": {
-    "*.{js,json,md,ts,tsx}": [
-      "prettier --write"
-    ]
-  },
   "engines": {
     "node": ">=16.0.0",
     "npm": ">=8.0.0"
