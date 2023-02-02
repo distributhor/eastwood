@@ -1,9 +1,7 @@
-# Wild West
+# Utility Functions
 
-Thou shalt not util. But this is the wild west.
+Thou shalt not util, but this is the wild west. Do you feel lucky, Punk?
 
-These are some personal utility functions. It's highly debatable whether most of them are necessary at all. And in the cases where one can argue so, there are usually better and more established ways to accomplish some of these things (perhaps consider lodash instead). However, _because of reasons_, I ended up with a few functions of my own. They may not work for everyone in all use cases, and it certainly has not been an outright aim to try and be comprehensive. Use it, (probably) don't use it. 
+These are some personal util functions, that are similar to other (probably better) ones out there. These ones just do specifically what I want - no more, no less. If you want to take a peak: https://distributhor.github.io/eastwood/
 
-To see what there is: https://distributhor.github.io/wild-west/
-
-Forever a work in progress
+Forever a work in progress ...
