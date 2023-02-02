@@ -33,7 +33,7 @@
     "clean:rm": "rimraf dist",
     "clean": "tsc -b --clean",
     "build": "tsc -b --clean && tsc -b && rollup -c rollup.config.mjs",
-    "test": "jest -c test/unit/jest.config.js --passWithNoTests",
+    "test": "jest -c test/jest.config.js --passWithNoTests",
     "lint": "eslint --ignore-path .eslintignore .",
     "lint:fix": "eslint --fix --ignore-path .eslintignore .",
     "lint:staged": "lint-staged",

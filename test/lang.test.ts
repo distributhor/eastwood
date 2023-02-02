@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 // const _ = require("lodash");
-import * as lang from '../../src/lang'
+import * as lang from '../src/lang'
 
 interface Human {
   name?: string
