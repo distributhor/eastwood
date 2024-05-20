@@ -17,8 +17,8 @@ export function isObject(value: any): boolean {
     return false
   }
 
-  if (typeof value === 'object') {
-    return !Array.isArray(value)
+  if (typeof value === 'object' && !Array.isArray(value)) {
+    return true
   }
 
   return false

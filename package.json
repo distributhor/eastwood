@@ -1,11 +1,11 @@
 {
   "name": "@distributhor/eastwood",
-  "version": "1.0.0",
-  "description": "Thou shalt not util, but this is the wild west. Do you feel lucky, Punk?",
+  "version": "1.0.1",
+  "description": "The good, the bad and teh ugly. A few basic utilities for which that are probably better alternatives.",
   "homepage": "https://distributhor.github.io/eastwood/",
   "license": "MIT",
   "keywords": [
-    "typescript javascript util"
+    "typescript javascript utilities"
   ],
   "repository": {
     "type": "git",

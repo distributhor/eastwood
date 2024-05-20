@@ -28,7 +28,7 @@ class Person {
   }
 }
 
-describe('Wild West Tests', () => {
+describe('Eastwood Tests', () => {
   test('Equality', () => {
     const str = 'string'
 
