@@ -1,7 +1,7 @@
 {
   "name": "@distributhor/eastwood",
-  "version": "1.0.3",
-  "description": "The good, the bad and the ugly. A few basic utilities for which that are probably better alternatives.",
+  "version": "1.0.4",
+  "description": "The good, the bad and the ugly. A few basic utilities for which there are probably better alternatives.",
   "homepage": "https://distributhor.github.io/eastwood/",
   "license": "MIT",
   "keywords": [
